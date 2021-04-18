@@ -1,0 +1,20 @@
+POST http://localhost:8080/api/dailyplans
+Content-Type: application/json
+
+{
+  "date": "",
+  "description": ""
+}
+
+###
+GET http://localhost:8080/api/intakes?startDate=2021-04-13&endDate=2021-04-15
+
+###
+POST http://localhost:8080/api/intakes
+Content-Type: application/json
+
+{
+  "amount": 1.0,
+  "foodId": 1,
+  "date": "2021-04-13"
+}

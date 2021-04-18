@@ -1,0 +1,45 @@
+GET http://localhost:8080/api/foods
+
+###
+POST http://localhost:8080/api/foods
+Content-Type: application/json
+
+{
+  "name": "바나나프로틴바",
+  "servingSize": {
+    "amount": 1,
+    "unit": "EACH"
+  },
+  "nutrients": [
+    {
+      "category": "CALORIES",
+      "amount": 193
+    },
+    {
+      "category": "PROTEIN",
+      "amount": 13
+    }
+  ]
+}
+
+###
+POST http://localhost:8080/api/foods
+Content-Type: application/json
+
+{
+  "name": "두",
+  "servingSize": {
+    "amount": 1,
+    "unit": "EACH"
+  },
+  "nutrients": [
+    {
+      "category": "CALORIES",
+      "amount": 13
+    },
+    {
+      "category": "PROTEIN",
+      "amount": 13
+    }
+  ]
+}
