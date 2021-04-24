@@ -2,13 +2,14 @@
   <!-- App.vue -->
 
   <v-app>
-    <v-navigation-drawer app>
-      <!-- -->
-    </v-navigation-drawer>
+<!--    <v-navigation-drawer app>-->
 
-    <v-app-bar app>
-      <!-- -->
-    </v-app-bar>
+<!--    </v-navigation-drawer>-->
+    <navigation-bar></navigation-bar>
+
+<!--    <v-app-bar app>-->
+
+<!--    </v-app-bar>-->
 
     <!-- Sizes your content based upon application components -->
     <v-main>
@@ -21,17 +22,20 @@
       </v-container>
     </v-main>
 
-    <v-footer app>
-      <!-- -->
-    </v-footer>
+<!--    <v-footer app>-->
+
+<!--    </v-footer>-->
   </v-app>
 </template>
 
 <script>
+import NavigationBar from "@/components/NavigationBar";
+
 export default {
   name: 'App',
 
   components: {
+    NavigationBar
   },
 
   data: () => ({

@@ -8,7 +8,7 @@
       <v-row>
         <v-menu
             ref="menu"
-            :close-on-content-click="false"
+            :close-on-content-click="true"
             transition="scale-transition"
             offset-y
             min-width="auto"
