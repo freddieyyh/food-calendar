@@ -8,7 +8,6 @@
       <v-row>
         <v-menu
             ref="menu"
-            v-model="menu"
             :close-on-content-click="false"
             transition="scale-transition"
             offset-y
@@ -29,9 +28,35 @@
               v-model="date"
               :max="new Date().toISOString().substr(0, 10)"
               min="1950-01-01"
-              @change="save"
           ></v-date-picker>
         </v-menu>
+      </v-row>
+      <v-row>
+        <v-autocomplete
+            v-model="food"
+            :items="foods"
+            item-text="name"
+            dense
+            filled
+            label="음식"
+            @change="selectFood"
+            return-object
+        ></v-autocomplete>
+      </v-row>
+      <v-row v-if="food !== null">
+        <v-col
+            v-for="nutrient in food.nutrients"
+            v-bind:key="nutrient.category"
+            cols="12"
+            md="3"
+        >
+          <v-text-field
+              :value="(nutrient.amount * amount)"
+              :label="nutrient.category"
+              type="number"
+              disabled
+          ></v-text-field>
+        </v-col>
       </v-row>
       <v-row>
         <v-text-field
@@ -42,90 +67,22 @@
             type="number"
         />
       </v-row>
-      <v-divider></v-divider>
-
-      <v-row>
-        <v-autocomplete
-            v-model="food"
-            :items="foods"
-            dense
-            filled
-            label="음식"
-        ></v-autocomplete>
-      </v-row>
-      <v-row>
-        <v-col
-            cols="12"
-            md="3"
-        >
-          <v-text-field
-              v-model="calorie"
-              label="칼로리"
-              type="number"
-              disabled
-          ></v-text-field>
-        </v-col>
-
-        <v-col
-            cols="12"
-            md="3"
-        >
-          <v-text-field
-              v-model="carbohydrate"
-              label="탄수화물"
-              type="number"
-              disabled
-          ></v-text-field>
-        </v-col>
-
-        <v-col
-            cols="12"
-            md="3"
-        >
-          <v-text-field
-              v-model="protein"
-              label="단백질"
-              type="number"
-              disabled
-          ></v-text-field>
-        </v-col>
-
-        <v-col
-            cols="12"
-            md="3"
-        >
-          <v-text-field
-              v-model="fat"
-              label="지방"
-              type="number"
-              disabled
-          ></v-text-field>
-        </v-col>
-      </v-row>
     </v-container>
 
     <v-btn
         :disabled="!valid"
         color="success"
         class="mr-4"
-        @click="validate"
+        @click="save"
     >
-      Validate
-    </v-btn>
-
-    <v-btn
-        color="error"
-        class="mr-4"
-        @click="reset"
-    >
-      Reset Form
+      저장하기
     </v-btn>
 
     <v-btn
         color="warning"
-        @click="resetValidation"
+        @click="close"
     >
-      Reset Validation
+      닫기
     </v-btn>
   </v-form>
 </template>
@@ -133,42 +90,80 @@
 <script>
 export default {
   name: "IntakeInputForm",
-  data: () => ({
-    valid: true,
-    foods: [
-      '식량1',
-      '식량2',
-      '식량3',
-      '식량4',
-    ],
-    food: null,
-    amount: 0,
-    calorie: 200,
-    carbohydrate: 10,
-    fat: 20,
-    protein: 30,
-    date: null,
-    menu: false,
-  }),
+  props: {
+    intakeId: Number,
+    defaultDate: String,
+  },
+  data() {
+    return {
+      valid: true,
+      foods: [],
+      food: null,
+      amount: 0,
+      date: this.defaultDate,
+    }
+  },
   watch: {
-    menu (val) {
-      val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
-    },
+    intakeId(newIntakeId) {
+      this.loadIntake(newIntakeId)
+    }
   },
   methods: {
-    validate () {
+    close() {
+      this.$emit('close')
+    },
+    selectFood(food) {
+      this.food = food
+    },
+    save() {
       this.$refs.form.validate()
+      if (this.valid) {
+        this.$http.post(`/api/intakes`, {
+          date: this.date,
+          amount: this.amount,
+          foodId: this.food.id
+        })
+            .then(() => this.$emit('submit'))
+            .catch(() => alert("저장에 실패했습니다."))
+      }
     },
-    reset () {
-      this.$refs.form.reset()
+    loadFoods(name) {
+      let params
+      if (name !== "") {
+        params = {
+          name: name
+        }
+      } else {
+        params = {}
+      }
+
+      this.$http.get("/api/foods", params)
+          .then(response => {
+            this.foods = response.data.content
+          })
     },
-    resetValidation () {
-      this.$refs.form.resetValidation()
-    },
-    save (date) {
-      this.$refs.menu.save(date)
+    loadIntake(intakeId) {
+      return this.$http.get(`/api/intakes/${intakeId}`)
+          .then(response => {
+            this.amount = response.data.amount
+            this.date = response.data.date
+            return this.$http.get(`/api/foods/${response.data.food.id}`)
+          })
+          .then(response => {
+            this.food = response.data
+            this.foods = [this.food]
+          })
     },
   },
+  mounted: function () {
+    if (this.intakeId != null) {
+      this.loadIntake(this.intakeId)
+          .finally(() => {
+          })
+    } else {
+      this.loadFoods()
+    }
+  }
 }
 </script>
 

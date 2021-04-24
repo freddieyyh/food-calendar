@@ -18,8 +18,6 @@
 
         <!-- If using vue-router -->
         <router-view></router-view>
-        <HelloWorld />
-        <IntakeInputForm/>
       </v-container>
     </v-main>
 
@@ -30,15 +28,10 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
-import IntakeInputForm from './components/IntakeInputForm';
-
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
-    IntakeInputForm
   },
 
   data: () => ({
