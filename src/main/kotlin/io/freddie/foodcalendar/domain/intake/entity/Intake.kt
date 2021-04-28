@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.persistence.OneToOne
 
 @Entity
@@ -15,7 +16,7 @@ data class Intake(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0,
     var amount: Double,
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "food_id")
     var food: Food,
     var date: LocalDate = LocalDate.now()

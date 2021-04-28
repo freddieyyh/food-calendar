@@ -48,7 +48,7 @@ class IntakeController(
     @GetMapping("/{id}")
     fun getIntake(@PathVariable("id") id: Long): IntakeResponse {
         val intake = intakeService.get(id)
-        return modelMapper.map(intake, IntakeResponse::class.java)
+        return IntakeResponse.fromEntity(intake)
     }
 
     @GetMapping

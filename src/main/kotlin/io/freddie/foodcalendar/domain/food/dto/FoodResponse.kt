@@ -7,7 +7,7 @@ import io.freddie.foodcalendar.domain.food.entity.Unit
 
 @NoArg
 data class FoodResponse(
-    val id: Long,
+    var id: Long,
     var name: String,
     var servingSize: ServingSize,
     var description: String = "",

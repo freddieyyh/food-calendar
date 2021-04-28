@@ -45,12 +45,13 @@
         :event-color="getEventColor"
         @click:date="viewDay"
         @click:event="showEvent"
-        @change="getEvents"
+        @change="changeDates"
     ></v-calendar>
     <intake-dialog
         v-model="selectedOpen"
         :date="selectedDate"
         :intake-id="selectedIntakeId"
+        @submit="reload"
     ></intake-dialog>
   </div>
 </template>
@@ -74,6 +75,8 @@ export default {
     selectedElement: null,
     selectedOpen: false,
     selectedDate: null,
+    startDate: null,
+    endDate: null,
   }),
   computed: {
     selectedIntakeId() {
@@ -81,22 +84,27 @@ export default {
     }
   },
   methods: {
-    getEvents ({ start, end }) {
-      this.$http.get(`/api/intakes?startDate=${start.date}&endDate=${end.date}`)
-        .then(response => {
-          const events = response.data.map(intake => {
-            return {
-              intakeId: intake.id,
-              name: intake.food.name,
-              start: `${intake.date}`,
-              end: `${intake.date}`,
-              timed: false,
-              color: this.colors[this.rnd(0, this.colors.length - 1)]
-            }
-          })
+    changeDates ({ start, end }) {
+      this.startDate = start
+      this.endDate = end
+      this.loadEvents()
+    },
+    loadEvents() {
+      this.$http.get(`/api/intakes?startDate=${this.startDate.date}&endDate=${this.endDate.date}`)
+          .then(response => {
+            const events = response.data.map(intake => {
+              return {
+                intakeId: intake.id,
+                name: intake.food.name,
+                start: `${intake.date}`,
+                end: `${intake.date}`,
+                timed: false,
+                color: this.colors[this.rnd(0, this.colors.length - 1)]
+              }
+            })
 
-          this.events = events
-        })
+            this.events = events
+          })
     },
     clearSelectedItem() {
       this.selectedEvent = null
@@ -147,6 +155,9 @@ export default {
     setToday () {
       this.focus = ''
     },
+    reload() {
+      this.loadEvents()
+    }
   },
 }
 </script>

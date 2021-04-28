@@ -5,7 +5,7 @@
 <!--    <v-navigation-drawer app>-->
 
 <!--    </v-navigation-drawer>-->
-    <navigation-bar></navigation-bar>
+    <navigation-bar v-show="!disableNavigationBar"></navigation-bar>
 
 <!--    <v-app-bar app>-->
 
@@ -41,5 +41,10 @@ export default {
   data: () => ({
     //
   }),
+  computed: {
+    disableNavigationBar() {
+      return this.$route.path.endsWith('login')
+    }
+  }
 };
 </script>

@@ -15,7 +15,7 @@
               :intake-id="intakeId"
               :default-date="date"
               @close="dialog = false"
-              @submit="dialog = false"
+              @submit="submit"
           ></intake-input-form>
         </v-card-text>
       </v-card>
@@ -52,6 +52,12 @@ export default {
 
     open(newOpen) {
       this.dialog = newOpen
+    }
+  },
+  methods: {
+    submit() {
+      this.dialog = false
+      this.$emit('submit')
     }
   }
 }

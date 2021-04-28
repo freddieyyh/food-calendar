@@ -27,6 +27,7 @@
               v-for="(tab, i) in tabs"
               :key="i"
               :to="{ name: tab.route.name }"
+              exact
           >
             <v-list-item-title>{{ tab.name }}</v-list-item-title>
           </v-list-item>
